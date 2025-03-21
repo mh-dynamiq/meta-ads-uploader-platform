@@ -1,16 +1,31 @@
-import { dirname } from "path";
-import { fileURLToPath } from "url";
-import { FlatCompat } from "@eslint/eslintrc";
+import stylisticJs from '@stylistic/eslint-plugin-js';
+import nextPlugin from '@next/eslint-plugin-next';
+import tsPlugin from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-});
-
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+/** @type {import('eslint').Linter.FlatConfig[]} */
+export default [
+  {
+    plugins: {
+      '@stylistic/js': stylisticJs,
+      '@next/next': nextPlugin,
+      '@typescript-eslint': tsPlugin,
+    },
+    languageOptions: {
+      parser: tsParser,
+      ecmaVersion: 'latest',
+      sourceType: 'module',
+    },
+    extends: [
+      // Disse erstatningerne for de "extends" vi ville have i .eslintrc.json
+      nextPlugin.configs['core-web-vitals'],
+      tsPlugin.configs.recommended,
+    ],
+    rules: {
+      // Vores egne regler
+      'no-unused-vars': 'warn',
+      '@typescript-eslint/no-unused-vars': 'warn',
+      '@typescript-eslint/no-explicit-any': 'warn',
+    }
+  }
 ];
-
-export default eslintConfig;
